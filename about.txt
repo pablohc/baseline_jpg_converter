@@ -1,0 +1,51 @@
+Baseline JPEG Converter v2.0.0
+==============================
+
+Converts EPUB images to baseline JPEG format (max 480x800) and fixes
+SVG-wrapped images for compatibility with Crosspoint Reader and other
+e-readers that don't support progressive JPEG or SVG-wrapped images.
+
+Features:
+---------
+- Converts book covers and internal EPUB images to baseline JPEG
+- Resizes images to max 480x800 pixels (maintains aspect ratio)
+- Fixes ALL SVG-wrapped images (not just covers)
+- Ensures proper cover meta tags in OPF files
+- Handles PNG, GIF, WebP, and BMP conversions
+- Creates .x4.epub output files
+
+Usage:
+------
+Plugin (Calibre):
+1. Select one or more books in Calibre library
+2. Click "Baseline JPEG Converter" button
+3. Converted books get an additional EPUBX4 format
+
+Standalone:
+python standalone/convert_epub.py book.epub
+python standalone/convert_epub.py /path/to/epubs/
+
+Repository Structure:
+---------------------
+baseline_jpg_converter/
+├── shared/              # Shared conversion logic
+│   ├── __init__.py
+│   └── converter.py
+├── calibre-plugin/      # Calibre plugin files
+│   ├── __init__.py
+│   └── ui.py
+├── standalone/          # Standalone script
+│   └── convert_epub.py
+├── install_plugin.py    # Creates plugin ZIP
+├── README.md
+└── requirements.txt     # For standalone usage
+
+Changelog:
+----------
+v2.0.0 - Refactored with shared module, max 480x800, .x4.epub output
+v1.10.0 - Added .x4.epub output for standalone script
+v1.9.0 - Fixed ALL SVG-wrapped images (not just covers)
+v1.8.0 - Initial version
+
+Author: Megabit
+License: GNU GPL v3

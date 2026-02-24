@@ -5,13 +5,13 @@ from calibre.customize import InterfaceActionBase
 
 class BaselineJPGConverterPlugin(InterfaceActionBase):
     name = 'Baseline JPEG Converter'
-    description = 'Converts images to baseline JPEG and fixes SVG covers for e-reader compatibility'
+    description = 'Converts EPUB images to baseline JPEG (max 480x800) and fixes SVG-wrapped images for Crosspoint Reader compatibility'
     supported_platforms = ['windows', 'osx', 'linux']
     author = 'Megabit'
-    version = (1, 8, 0)
+    version = (2, 0, 0)
     minimum_calibre_version = (5, 0, 0)
-    
-    actual_plugin = 'calibre_plugins.baseline_jpg_cover.ui:BaselineJPGAction'
+
+    actual_plugin = 'ui:BaselineJPGAction'
 
     def is_customizable(self):
         return False
