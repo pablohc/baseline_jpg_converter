@@ -7,6 +7,7 @@ Uses shared conversion logic from ../shared/converter.py
 
 import sys
 import os
+import shutil
 from pathlib import Path
 
 from calibre.gui2.actions import InterfaceAction
@@ -227,21 +228,19 @@ class BaselineJPGAction(InterfaceAction):
                 if formats and 'EPUB' in formats:
                     epub_path = db.format_abspath(book_id, 'EPUB')
                     if epub_path and os.path.exists(epub_path):
-                        # Convert EPUB - creates a new .x4.epub file
-                        img_count, svg_count, meta_added = self.convert_epub_images(epub_path)
+                        # Backup original EPUB by renaming to _backup.epub
+                        backup_path = epub_path.replace('.epub', '_backup.epub')
+                        shutil.move(epub_path, backup_path)
+
+                        # Convert the backup - output will have original .epub name
+                        img_count, svg_count, meta_added = self.convert_epub_images(backup_path)
                         converted_epub_images += img_count
                         svg_images_fixed += svg_count
                         if meta_added:
                             cover_metas_added += 1
 
-                        # Also add to Calibre as EPUBX4 format for device transfer
-                        x4_path = epub_path.replace('.epub', '.x4.epub')
-                        if x4_path != epub_path and os.path.exists(x4_path):
-                            try:
-                                with open(x4_path, 'rb') as f:
-                                    db.add_format(book_id, 'EPUBX4', f.read())
-                            except Exception as add_error:
-                                errors.append(f'{title} (adding EPUBX4): {str(add_error)}')
+                        # The converted file is now at epub_path (original name)
+                        # Calibre will automatically detect the change
             except Exception as e:
                 errors.append(f'{title} (EPUB): {str(e)}')
 
@@ -253,7 +252,7 @@ class BaselineJPGAction(InterfaceAction):
         if cover_metas_added > 0:
             msg += f'\nAdded {cover_metas_added} cover meta tag(s).'
         if converted_epub_images > 0 or svg_images_fixed > 0:
-            msg += f'\n\n.x4.epub files created and added as EPUBX4 format for device transfer.'
+            msg += f'\n\nOriginal EPUBs backed up as "_backup.epub" and replaced with converted versions.'
 
         if errors:
             msg += f'\n\nErrors ({len(errors)}):\n' + '\n'.join(errors[:10])
